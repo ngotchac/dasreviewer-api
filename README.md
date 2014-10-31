@@ -36,7 +36,12 @@ In order to add a comment, the following steps need to be followed (from [google
 
 ## NodeJS
 
-You can now run the server :
+Install all the dependencies:
+```bash
+npm install
+```
+
+You can now run the server:
 ```bash
 node app/app.js
 ```
