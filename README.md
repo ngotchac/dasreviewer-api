@@ -36,7 +36,7 @@ In order to add a comment, the following steps need to be followed (from [google
 
 ## NodeJS
 
-Install all the dependencies:
+Install all the dependencies (might need a `sudo`):
 ```bash
 npm install
 ```
