@@ -41,6 +41,11 @@ Install all the dependencies:
 npm install
 ```
 
+If you get an error, try this before:
+```bash
+sudo apt-get install build-essential
+```
+
 You can now run the server:
 ```bash
 node app/app.js
