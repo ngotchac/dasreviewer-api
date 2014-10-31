@@ -37,5 +37,6 @@ In order to add a comment, the following steps need to be followed (from [google
 ## NodeJS
 
 You can now run the server :
-```node app/app.js
+```bash
+node app/app.js
 ```
