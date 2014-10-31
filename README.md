@@ -28,9 +28,9 @@ In order to add a comment, the following steps need to be followed (from [google
 
    You will be asked for the password you received during step 5.
 
-7. Move certificate.pem to ./app/ .
+7. Move `certificate.pem` to `./app/` .
 
-8. Modify ./app/config.js email string to match the generated one in "APIs & auth" > "Credentials" > "EMAIL ADDRESS".
+8. Modify `./app/config.js` email string to match the generated one in "APIs & auth" > "Credentials" > "EMAIL ADDRESS".
 
 9. Share the Google SpreadSheet with the previous "EMAIL ADDRESS"
 
