@@ -50,6 +50,7 @@ app.get('/commits', function(req, res) {
         self.baseProjectUrl = req.query.url;
         self.xtensionsToLook = ['php', 'js', 'css', 'html', 'phtml'];
         self.startDate = new Date(req.query.date);
+        self.dateFormat = req.query.redmineDateFormat;
         self.startDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
         self.project = req.query.project.toLowerCase();
 

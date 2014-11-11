@@ -10,6 +10,17 @@
          * @param url String The Url to parse data from, without the baseProjectUrl
          * @param callback(self, body, jQuery)
          */
+        
+        /**
+         * This method will parse a given URL, and, if withoutjQuery not set to true,
+         * 
+         * 
+         * @param  {[type]}   self
+         * @param  {[type]}   url
+         * @param  {Function} callback
+         * @param  {[type]}   withoutjQuery
+         * @return {[type]}
+         */
         utils.parseUrl = function(self, url, callback, withoutjQuery) {
             var totalData = 0;
             var maxDataSize = 5 * 1024 * 1024;
@@ -54,39 +65,58 @@
             });
         };
 
+        /**
+         * This method will scrap all the revisions found in the jQuery arguments
+         * based on the date, set in the self object. The callback is a function that
+         * will be called with the revisions Array in argument.
+         * 
+         * @param  {Object}   self
+         * @param  {Object}   jQuery
+         * @param  {Function} callback
+         * @param  {Object}   revisions
+         */
         utils.scrapRevisions = function(self, jQuery, callback, revisions) {
-            var $ = jQuery;
-
             if(revisions === undefined) {
                 revisions = [];
             }
 
-            var mainTable = $('table.changesets');
-            var changeLines = $(mainTable).find('tr.changeset');
+            var mainTable = jQuery('table.changesets');
+            var changeLines = jQuery(mainTable).find('tr.changeset');
             var wasLast = false;
             var callbackSent = false;
             var date;
+            var dateRegex = /(\d{2})\/(\d{2})\/(\d{4})/;
 
             console.log('Parse page %d', self.currentPage);
 
-            $.each(changeLines, function(uK, changeLine) {
-                date = new Date($(changeLine).find('td.committed_on').html());
-                date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            jQuery.each(changeLines, function(uK, changeLine) {
+                date = jQuery(changeLine).find('td.committed_on').html();
+
+                if(dateRegex.test(date)) {
+                    date = dateRegex.exec(date)
+                    if(self.dateFormat === 'fr') {
+                        date = new Date(date[3], date[2]-1, date[1]);
+                    } else {
+                        date = new Date(date[3], date[1]-1, date[2]);
+                    }
+                } else {
+                    date = new Date(date);
+                }
 
                 if(date.getTime() === self.startDate.getTime()) {
-                    var idObj = $(changeLine).find('td.id').find('a');
+                    var idObj = jQuery(changeLine).find('td.id').find('a');
                     var issues = [];
 
-                    $(changeLine).find('a.issue').each(function(k, issueA) {
+                    jQuery(changeLine).find('a.issue').each(function(k, issueA) {
                         issues.push({
-                            title: $(issueA).attr('title'),
-                            url: $(issueA).attr('href')
+                            title: jQuery(issueA).attr('title'),
+                            url: jQuery(issueA).attr('href')
                         });
                     });
 
                     if(issues.length === 0) {
                         var r = /#([0-9]+)/;
-                        var matches = r.exec($(changeLine).find('td.comments').html());
+                        var matches = r.exec(jQuery(changeLine).find('td.comments').html());
 
                         if(matches !== null && matches.length > 0 && matches[1] !== undefined) {
                             issues.push({
@@ -96,8 +126,8 @@
                     }
 
                     revisions.push({
-                        id: $(idObj).html(),
-                        url: $(idObj).attr('href'),
+                        id: jQuery(idObj).html(),
+                        url: jQuery(idObj).attr('href'),
                         date: date,
                         issues: issues
                     });
@@ -119,6 +149,13 @@
             }
         };
 
+        /**
+         * This method will add a revision to self.revisions, and eventually send the
+         * revisions Array if we have all the revisions expected.
+         * 
+         * @param {Object} self
+         * @param {Object} revision
+         */
         utils.addRevision = function(self, revision) {
             self.revisions.push(revision);
 
@@ -129,6 +166,15 @@
             }
         };
 
+        /**
+         * This method will, from a patch content, split all the diff patches
+         * file by file, remove the un-necessary headers, and create an Array
+         * of patches.
+         * 
+         * @param  {String} fullPatchContent
+         * @param  {Object} self
+         * @return {Array}
+         */
         utils.splitPatches = function(fullPatchContent, self) {
             var files = [];
 
